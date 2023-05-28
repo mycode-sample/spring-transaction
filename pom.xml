@@ -20,6 +20,7 @@
     <version.slf4j>2.0.7</version.slf4j>
     <version.logback>1.4.7</version.logback>
     <version.lombok>1.18.8</version.lombok>
+    <version.mysql>8.0.29</version.mysql>
   </properties>
 
   <dependencies>
@@ -43,6 +44,12 @@
       <groupId>org.hibernate</groupId>
       <artifactId>hibernate-entitymanager</artifactId>
       <version>${version.hibernate}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>mysql</groupId>
+      <artifactId>mysql-connector-java</artifactId>
+      <version>${version.mysql}</version>
     </dependency>
 
     <dependency>
