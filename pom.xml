@@ -52,7 +52,7 @@
     </dependency>
     <dependency>
       <groupId>ch.qos.logback</groupId>
-      <artifactId>logback-access</artifactId>
+      <artifactId>logback-classic</artifactId>
       <version>${version.logback}</version>
     </dependency>
     <dependency>
