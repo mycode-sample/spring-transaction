@@ -1,0 +1,67 @@
+<configuration>
+  <property name="application" value="media"/>
+  <property name="sqlFileName" value="sql"/>
+  <property name="consolePattern" value="%cyan(%date{yyyy-MM-dd HH:mm:ss:SSS} %.-1level{1} [%25.25thread])
+ %yellow([%30.30logger{30}#%-20.20(%method:%line)]) %blue(%message%n)"/>
+  <property name="filePattern" value="%date{yyyy-MM-dd HH:mm:ss:SSS} %.-1level{1} [%25.25thread]
+ [%30.30logger{30}#%-20.20(%method:%line)] %message%n"/>
+
+  <appender name="ALL" class="ch.qos.logback.core.rolling.RollingFileAppender">
+    <file>logs/${application}.log</file>
+    <encoder>
+      <pattern>
+        ${filePattern}
+      </pattern>
+    </encoder>
+    <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+      <fileNamePattern>logs/archive/%d{yyyyMMdd}/${application}.%i.log.zip</fileNamePattern>
+      <maxFileSize>50MB</maxFileSize>
+      <maxHistory>60</maxHistory>
+      <totalSizeCap>1GB</totalSizeCap>
+    </rollingPolicy>
+  </appender>
+
+  <appender name="SQL" class="ch.qos.logback.core.rolling.RollingFileAppender">
+    <file>logs/${sqlFileName}.log</file>
+    <encoder>
+      <pattern>
+        ${filePattern}
+      </pattern>
+    </encoder>
+    <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+      <fileNamePattern>logs/archive/%d{yyyyMMdd}/${sqlFileName}.%i.log.zip</fileNamePattern>
+      <maxFileSize>50MB</maxFileSize>
+      <maxHistory>60</maxHistory>
+      <totalSizeCap>1GB</totalSizeCap>
+    </rollingPolicy>
+  </appender>
+
+  <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+    <encoder>
+      <pattern>
+        ${consolePattern}
+      </pattern>
+    </encoder>
+  </appender>
+
+  <logger name="sql" level="DEBUG" additivity="FALSE">
+    <appender-ref ref="STDOUT"/>
+    <appender-ref ref="SQL"/>
+  </logger>
+
+  <logger name="org.hibernate.SQL" level="DEBUG" additivity="FALSE">
+    <appender-ref ref="STDOUT"/>
+    <appender-ref ref="SQL"/>
+  </logger>
+
+  <logger name="org.hibernate.type.descriptor.sql" level="TRACE" additivity="FALSE">
+    <appender-ref ref="STDOUT"/>
+    <appender-ref ref="SQL"/>
+  </logger>
+
+  <!-- 根logger等级是INFO -->
+  <root level="INFO">
+    <appender-ref ref="STDOUT"/>
+    <appender-ref ref="ALL"/>
+  </root>
+</configuration>
