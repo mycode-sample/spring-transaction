@@ -1,0 +1,51 @@
+<beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns="http://www.springframework.org/schema/beans"
+    xmlns:jpa="http://www.springframework.org/schema/data/jpa"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans
+          http://www.springframework.org/schema/beans/spring-beans.xsd
+          http://www.springframework.org/schema/data/jpa
+          http://www.springframework.org/schema/data/jpa/spring-jpa.xsd"
+>
+  <jpa:repositories base-package="com.wrotecode.spring.springtransaction.repository"/>
+
+  <bean id="property" class="org.springframework.context.support.PropertySourcesPlaceholderConfigurer">
+    <property name="location" value="classpath:config/datasource.properties"/>
+  </bean>
+
+  <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+    <property name="url" value="${datasource.url}"/>
+    <property name="driverClassName" value="${datasource.driverClassName}"/>
+    <property name="username" value="${datasource.username}"/>
+    <property name="password" value="${datasource.password}"/>
+  </bean>
+
+  <!--雪花id生成器，使用cn.hutool.core.lang.Snowflake.Snowflake(long, long)-->
+  <bean id="snowFlake" class="com.wrotecode.spring.springtransaction.config.SnowFlake">
+    <constructor-arg index="0" value="0"/>
+    <constructor-arg index="1" value="0"/>
+  </bean>
+
+  <bean id="entityManagerFactory"
+      class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
+    <property name="dataSource" ref="dataSource"/>
+    <property name="jpaVendorAdapter">
+      <bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter"/>
+    </property>
+    <property name="packagesToScan" value="com.wrotecode.spring.springtransaction.entity"/>
+    <property name="jpaProperties">
+      <props>
+        <prop key="hibernate.dialect">org.hibernate.dialect.MySQL8Dialect</prop>
+        <prop key="hibernate.max_fetch_depth">3</prop>
+        <prop key="hibernate.jdbc.fetch_size">50</prop>
+        <prop key="hibernate.jdbc.batch_size">10</prop>
+        <prop key="hibernate.format_sql">true</prop>
+        <prop key="hibernate.use_sql_comments">true</prop>
+      </props>
+    </property>
+  </bean>
+
+  <bean id="transactionManager"
+      class="org.springframework.orm.jpa.JpaTransactionManager">
+    <property name="entityManagerFactory" ref="entityManagerFactory"/>
+  </bean>
+</beans>
