@@ -44,6 +44,10 @@ public class SnowFlake {
         this.machineId = machineId;
     }
 
+    public String nextIdString() {
+        return String.valueOf(nextId());
+    }
+
     public synchronized long nextId() {
         long currStmp = getNewstmp();
         if (currStmp < lastStmp) {
