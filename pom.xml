@@ -26,12 +26,7 @@
   <dependencies>
     <dependency>
       <groupId>org.springframework</groupId>
-      <artifactId>spring-context</artifactId>
-      <version>${version.spring}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.springframework</groupId>
-      <artifactId>spring-context</artifactId>
+      <artifactId>spring-tx</artifactId>
       <version>${version.spring-tx}</version>
     </dependency>
     <dependency>
