@@ -19,7 +19,7 @@ public class UserController {
     private UserService service;
 
     @PostMapping("/save")
-    public UserDto saveUser(@RequestBody UserDto userDto) throws Exception {
+    public UserDto saveUser(@RequestBody UserDto userDto) {
         Date date = new Date();
         userDto.getAccount().setCreateTime(date);
         userDto.getAccount().setStatus("1");
@@ -34,12 +34,12 @@ public class UserController {
         return service.saveUser(userDto);
     }
 
-    public UserDto deleteUser(@RequestParam(value = "accountId") String accountId) throws Exception {
+    public UserDto deleteUser(@RequestParam(value = "accountId") String accountId) {
         return service.deleteAccount(accountId);
     }
 
     @PostMapping("/queryAll")
-    public List queryAll() throws Exception {
+    public List queryAll() {
         return service.queryAll();
     }
 

@@ -15,6 +15,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -35,7 +37,8 @@ public class UserService {
     @Value("${queryAll}")
     private String sql;
 
-    public UserDto saveUser(UserDto userDto) throws Exception {
+    @Transactional
+    public UserDto saveUser(UserDto userDto) {
         boolean rollback = false;
         userDto = createId(userDto);
         accountRepository.save(userDto.getAccount());
@@ -49,9 +52,9 @@ public class UserService {
         return userDto;
     }
 
-    private void rollback(boolean rollback) throws Exception {
+    private void rollback(boolean rollback) {
         if (rollback) {
-            throw new Exception("发生错误");
+            throw new RuntimeException("发生错误");
         }
     }
 
@@ -62,7 +65,7 @@ public class UserService {
         return userDto;
     }
 
-    public UserDto deleteAccount(String accountId) throws Exception {
+    public UserDto deleteAccount(String accountId) {
         Optional<Account> account = accountRepository.findById(accountId);
         if (account.isEmpty()) {
             log.info("用户不存在");
@@ -92,12 +95,13 @@ public class UserService {
         return userDto;
     }
 
-    public List queryAll() throws Exception {
+    @Transactional(isolation = Isolation.READ_UNCOMMITTED)
+    public List queryAll() {
         rollback(false);
         return jdbcTemplate.queryForList(sql);
     }
 
-    public Associate deleteAssociate(String id) throws Exception {
+    public Associate deleteAssociate(String id) {
         Optional<Associate> associate = associateRepository.findById(id);
         if (associate.isPresent()) {
             associateRepository.deleteById(id);
@@ -107,7 +111,7 @@ public class UserService {
         return null;
     }
 
-    public Contact deleteContact(String id) throws Exception {
+    public Contact deleteContact(String id) {
         Optional<Contact> contact = contactRepository.findById(id);
         if (contact.isPresent()) {
             contactRepository.deleteById(id);
@@ -117,14 +121,14 @@ public class UserService {
         return null;
     }
 
-    public Contact saveContact(Contact contact) throws Exception {
+    public Contact saveContact(Contact contact) {
         contact.setId(snowFlake.nextIdString());
         Contact saved = contactRepository.save(contact);
         rollback(false);
         return saved;
     }
 
-    public Associate saveAssociate(Associate associate) throws Exception {
+    public Associate saveAssociate(Associate associate) {
         associate.setId(snowFlake.nextIdString());
         Associate saved = associateRepository.save(associate);
         rollback(false);
