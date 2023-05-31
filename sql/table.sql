@@ -30,6 +30,7 @@ create table spring_tx.associate
 create table spring_tx.contact
 (
     id varchar(18) not null primary key,
+    account_id varchar(18) not null default '',
     type varchar(16) not null default '',
     value varchar(32) not null default '',
     status varchar(2) not null default '',

@@ -20,6 +20,9 @@ public class Contact implements Serializable {
     @Column(name = "id", nullable = false)
     private String id;
 
+    @Column(name = "account_id", nullable = false)
+    private String accountId;
+
     @Column(name = "type", nullable = false)
     private String type;
 
