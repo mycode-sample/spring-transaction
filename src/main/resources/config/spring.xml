@@ -10,12 +10,13 @@
   <context:component-scan base-package="com.wrotecode.spring.springtransaction"/>
   <jpa:repositories base-package="com.wrotecode.spring.springtransaction.repository"/>
 
-  <bean id="placeholderConfigurerSupport" class="org.springframework.context.support.PropertySourcesPlaceholderConfigurer">
-    <property name="location" value="classpath:config/sql.properties"/>
-  </bean>
-
   <bean id="property" class="org.springframework.context.support.PropertySourcesPlaceholderConfigurer">
-    <property name="location" value="classpath:config/datasource.properties"/>
+    <property name="locations">
+      <array>
+        <value>classpath:config/sql.properties</value>
+        <value>classpath:config/datasource.properties</value>
+      </array>
+    </property>
   </bean>
 
   <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
@@ -54,9 +55,6 @@
       class="org.springframework.orm.jpa.JpaTransactionManager">
     <property name="entityManagerFactory" ref="entityManagerFactory"/>
   </bean>
-
-  <bean id="validatorFactoryBean"
-      class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean"/>
 
   <bean id="jdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate">
     <property name="dataSource" ref="dataSource"/>
