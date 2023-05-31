@@ -35,12 +35,24 @@ public class UserService {
     @Value("${queryAll}")
     private String sql;
 
-    public UserDto saveUser(UserDto userDto) {
+    public UserDto saveUser(UserDto userDto) throws Exception {
+        boolean rollback = false;
         userDto = createId(userDto);
         accountRepository.save(userDto.getAccount());
-        associateRepository.saveAll(userDto.getAssociateList());
-        contactRepository.saveAll(userDto.getContactList());
+        if (!userDto.getAssociateList().isEmpty()) {
+            associateRepository.saveAll(userDto.getAssociateList());
+        }
+        if (!userDto.getContactList().isEmpty()) {
+            contactRepository.saveAll(userDto.getContactList());
+        }
+        rollback(rollback);
         return userDto;
+    }
+
+    private void rollback(boolean rollback) throws Exception {
+        if (rollback) {
+            throw new Exception("发生错误");
+        }
     }
 
     public UserDto createId(UserDto userDto) {
@@ -50,7 +62,7 @@ public class UserService {
         return userDto;
     }
 
-    public UserDto deleteAccount(String accountId) {
+    public UserDto deleteAccount(String accountId) throws Exception {
         Optional<Account> account = accountRepository.findById(accountId);
         if (account.isEmpty()) {
             log.info("用户不存在");
@@ -76,11 +88,46 @@ public class UserService {
         } else {
             associateRepository.deleteAll(associateList);
         }
+        rollback(false);
         return userDto;
     }
 
-
-    public List queryAll() {
+    public List queryAll() throws Exception {
+        rollback(false);
         return jdbcTemplate.queryForList(sql);
+    }
+
+    public Associate deleteAssociate(String id) throws Exception {
+        Optional<Associate> associate = associateRepository.findById(id);
+        if (associate.isPresent()) {
+            associateRepository.deleteById(id);
+            return associate.orElse(null);
+        }
+        rollback(false);
+        return null;
+    }
+
+    public Contact deleteContact(String id) throws Exception {
+        Optional<Contact> contact = contactRepository.findById(id);
+        if (contact.isPresent()) {
+            contactRepository.deleteById(id);
+            return contact.orElse(null);
+        }
+        rollback(false);
+        return null;
+    }
+
+    public Contact saveContact(Contact contact) throws Exception {
+        contact.setId(snowFlake.nextIdString());
+        Contact saved = contactRepository.save(contact);
+        rollback(false);
+        return saved;
+    }
+
+    public Associate saveAssociate(Associate associate) throws Exception {
+        associate.setId(snowFlake.nextIdString());
+        Associate saved = associateRepository.save(associate);
+        rollback(false);
+        return saved;
     }
 }
