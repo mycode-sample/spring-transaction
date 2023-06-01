@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -122,14 +123,26 @@ public class UserService {
     }
 
     public Contact saveContact(Contact contact) {
-        contact.setId(snowFlake.nextIdString());
+        if (contact.getId() == null) {
+            contact.setId(snowFlake.nextIdString());
+            contact.setCreateTime(new Date());
+        } else {
+            contact.setUpdateTime(new Date());
+        }
+        contact.setStatus("1");
         Contact saved = contactRepository.save(contact);
         rollback(false);
         return saved;
     }
 
     public Associate saveAssociate(Associate associate) {
-        associate.setId(snowFlake.nextIdString());
+        if (associate.getId() == null) {
+            associate.setId(snowFlake.nextIdString());
+            associate.setCreateTime(new Date());
+        } else {
+            associate.setUpdateTime(new Date());
+        }
+        associate.setStatus("1");
         Associate saved = associateRepository.save(associate);
         rollback(false);
         return saved;
