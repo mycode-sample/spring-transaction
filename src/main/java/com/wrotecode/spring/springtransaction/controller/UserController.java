@@ -5,6 +5,8 @@ import com.wrotecode.spring.springtransaction.entity.Associate;
 import com.wrotecode.spring.springtransaction.entity.Contact;
 import com.wrotecode.spring.springtransaction.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,6 +18,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping(value = "/user")
+@Transactional(isolation = Isolation.READ_UNCOMMITTED)
 public class UserController {
     @Autowired
     private UserService service;
