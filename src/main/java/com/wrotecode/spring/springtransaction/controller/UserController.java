@@ -1,6 +1,8 @@
 package com.wrotecode.spring.springtransaction.controller;
 
 import com.wrotecode.spring.springtransaction.dto.UserDto;
+import com.wrotecode.spring.springtransaction.entity.Associate;
+import com.wrotecode.spring.springtransaction.entity.Contact;
 import com.wrotecode.spring.springtransaction.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -34,8 +36,29 @@ public class UserController {
         return service.saveUser(userDto);
     }
 
+    @PostMapping("/deleteUser")
     public UserDto deleteUser(@RequestParam(value = "accountId") String accountId) {
         return service.deleteAccount(accountId);
+    }
+
+    @PostMapping("/saveAssociate")
+    public Associate saveAssociate(@RequestBody Associate associate) {
+        return service.saveAssociate(associate);
+    }
+
+    @PostMapping("/deleteAssociate")
+    public Associate deleteAssociate(@RequestParam(value = "associateId") String associateId) {
+        return service.deleteAssociate(associateId);
+    }
+
+    @PostMapping("/saveContact")
+    public Contact saveContact(@RequestBody Contact contact) {
+        return service.saveContact(contact);
+    }
+
+    @PostMapping("/deleteContact")
+    public Contact deleteContact(@RequestParam(value = "contactId") String contactId) {
+        return service.deleteContact(contactId);
     }
 
     @PostMapping("/queryAll")

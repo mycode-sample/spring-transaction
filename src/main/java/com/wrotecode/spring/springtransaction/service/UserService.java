@@ -15,8 +15,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Isolation;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -37,7 +35,6 @@ public class UserService {
     @Value("${queryAll}")
     private String sql;
 
-    @Transactional
     public UserDto saveUser(UserDto userDto) {
         boolean rollback = false;
         userDto = createId(userDto);
@@ -95,7 +92,6 @@ public class UserService {
         return userDto;
     }
 
-    @Transactional(isolation = Isolation.READ_UNCOMMITTED)
     public List queryAll() {
         rollback(false);
         return jdbcTemplate.queryForList(sql);
@@ -104,9 +100,11 @@ public class UserService {
     public Associate deleteAssociate(String id) {
         Optional<Associate> associate = associateRepository.findById(id);
         if (associate.isPresent()) {
+            log.info("关联存在");
             associateRepository.deleteById(id);
             return associate.orElse(null);
         }
+        log.info("关联不存在");
         rollback(false);
         return null;
     }
@@ -114,9 +112,11 @@ public class UserService {
     public Contact deleteContact(String id) {
         Optional<Contact> contact = contactRepository.findById(id);
         if (contact.isPresent()) {
+            log.info("联系方式存在");
             contactRepository.deleteById(id);
             return contact.orElse(null);
         }
+        log.info("联系方式不存在");
         rollback(false);
         return null;
     }
