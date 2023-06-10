@@ -17,7 +17,7 @@
     <version.spring>5.3.13</version.spring>
     <version.spring-mvc>5.3.13</version.spring-mvc>
     <version.spring-tx>5.3.13</version.spring-tx>
-    <version.spring-data-jpa>2.7.9</version.spring-data-jpa>
+    <version.spring-data-jpa>2.6.0</version.spring-data-jpa>
     <version.spring-web>5.3.13</version.spring-web>
     <version.jackson>2.13.0</version.jackson>
     <version.hibernate>5.6.9.Final</version.hibernate>
