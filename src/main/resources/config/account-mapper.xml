@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="user">
+  <insert id="insertAccount"
+      parameterType="com.wrotecode.spring.springtransaction.entity.Account">
+    insert into spring_tx.account(id, username, nickname)
+    values(#{id}, #{username}, #{nickname})
+  </insert>
+
+  <select id="selectAll"
+      parameterType="com.wrotecode.spring.springtransaction.entity.Account"
+      resultType="com.wrotecode.spring.springtransaction.entity.Account">
+    select *
+    from spring_tx.account
+    <if test="id != null">
+      where id = #{id}
+    </if>
+  </select>
+</mapper>
