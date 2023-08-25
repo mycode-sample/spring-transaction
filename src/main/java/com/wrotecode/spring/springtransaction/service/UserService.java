@@ -3,6 +3,7 @@ package com.wrotecode.spring.springtransaction.service;
 import com.wrotecode.spring.springtransaction.config.SnowFlake;
 import com.wrotecode.spring.springtransaction.dto.UserDto;
 import com.wrotecode.spring.springtransaction.entity.Account;
+import com.wrotecode.spring.springtransaction.entity.Account_;
 import com.wrotecode.spring.springtransaction.entity.Associate;
 import com.wrotecode.spring.springtransaction.entity.Associate_;
 import com.wrotecode.spring.springtransaction.entity.Contact;
@@ -13,6 +14,7 @@ import com.wrotecode.spring.springtransaction.repository.ContactRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Sort;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
@@ -82,7 +84,7 @@ public class UserService {
         }
         log.info("删除关联账号");
         List<Associate> associateList = associateRepository.findAll(
-                (root, query, builder) -> builder.equal(root.get(Associate_.FIRST_ACCOUNT_ID), accountId));
+                (root, query, builder) -> builder.equal(root.get(Associate_.FIRST_ACCOUNT), accountId));
         userDto.setAssociateList(associateList);
         if (associateList.isEmpty()) {
             log.info("没有关联账号");
@@ -93,9 +95,13 @@ public class UserService {
         return userDto;
     }
 
-    public List queryAll() {
+    public List queryAll(String id) {
         rollback(false);
-        return jdbcTemplate.queryForList(sql);
+        if (id == null) {
+
+            return accountRepository.findAll(Sort.by("createTime").descending());
+        }
+        return accountRepository.findAll((r, q, b) -> b.equal(r.get(Account_.id), id));
     }
 
     public Associate deleteAssociate(String id) {

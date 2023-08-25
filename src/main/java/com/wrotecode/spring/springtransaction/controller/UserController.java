@@ -66,8 +66,8 @@ public class UserController {
     }
 
     @GetMapping("/queryAll")
-    public List queryAll() {
-        return service.queryAll();
+    public List queryAll(@RequestParam(required = false) String id) {
+        return service.queryAll(id);
     }
 
 }

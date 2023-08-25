@@ -5,6 +5,8 @@ import lombok.Data;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import java.io.Serializable;
 import java.util.Date;
@@ -20,8 +22,9 @@ public class Contact implements Serializable {
     @Column(name = "id", nullable = false)
     private String id;
 
-    @Column(name = "account_id", nullable = false)
-    private String accountId;
+    @ManyToOne
+    @JoinColumn(name = "account_id")
+    private Account accountId;
 
     @Column(name = "type", nullable = false)
     private String type;
