@@ -21,28 +21,23 @@ public class SimpleUserService {
     @Autowired
     private SnowFlake snowFlake;
 
-    public Account save(Account account) {
-        SqlSession sqlSession = null;
-        try {
-            account.setId(snowFlake.nextIdString());
-            sqlSession = factory.openSession(TransactionIsolationLevel.READ_COMMITTED);
-            sqlSession.insert("user.insertAccount", account);
-            sqlSession.commit();
-        } catch (Exception e) {
-            log.error("发生错误", e);
-            sqlSession.rollback();
-        } finally {
-            sqlSession.close();
-        }
+    public Account save(Account account, Integer level) {
+        account.setId(snowFlake.nextIdString());
+        update("user.insertAccount", account, level);
         return account;
     }
 
-    public List<Account> queryAll(Account account) {
+    public List<Account> queryAll(Account account, Integer level) {
+        return selectList("user.selectAll", account, level);
+    }
+
+
+    private <E> List<E> selectList(String namespace, Object parameter, Integer level) {
         SqlSession sqlSession = null;
-        List<Account> list = null;
+        List list = null;
         try {
-            sqlSession = factory.openSession(TransactionIsolationLevel.READ_UNCOMMITTED);
-            list = sqlSession.selectList("user.selectAll", account);
+            sqlSession = factory.openSession(getLevel(level));
+            list = sqlSession.selectList(namespace, parameter);
             sqlSession.commit();
         } catch (Exception e) {
             log.error("发生错误", e);
@@ -51,5 +46,51 @@ public class SimpleUserService {
             sqlSession.close();
         }
         return list;
+    }
+
+    private int update(String namespace, Object parameter, Integer level) {
+        SqlSession sqlSession = null;
+        int result = 0;
+        try {
+            sqlSession = factory.openSession(getLevel(level));
+            result = sqlSession.insert(namespace, parameter);
+            sqlSession.commit();
+        } catch (Exception e) {
+            log.error("发生错误", e);
+            sqlSession.rollback();
+        } finally {
+            sqlSession.close();
+        }
+        return result;
+    }
+
+
+    private TransactionIsolationLevel getLevel(Integer level) {
+        TransactionIsolationLevel isolationLevel;
+        level = level == null ? 0 : level;
+        switch (level) {
+            case 1: {
+                isolationLevel = TransactionIsolationLevel.READ_COMMITTED;
+                break;
+            }
+            case 2: {
+                isolationLevel = TransactionIsolationLevel.READ_UNCOMMITTED;
+                break;
+            }
+            case 3: {
+                isolationLevel = TransactionIsolationLevel.REPEATABLE_READ;
+                break;
+            }
+            case 4: {
+                isolationLevel = TransactionIsolationLevel.SERIALIZABLE;
+                break;
+            }
+            default: {
+                isolationLevel = TransactionIsolationLevel.NONE;
+                break;
+            }
+        }
+        log.info("隔离级别:" + isolationLevel.name());
+        return isolationLevel;
     }
 }

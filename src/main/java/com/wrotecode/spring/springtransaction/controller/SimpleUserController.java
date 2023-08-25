@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -17,12 +18,15 @@ public class SimpleUserController {
     private SimpleUserService service;
 
     @PostMapping("/save")
-    public Account save(@RequestBody Account account) {
-        return service.save(account);
+    public Account save(@RequestBody Account account,
+            @RequestParam(value = "level", required = false) Integer level) {
+        return service.save(account, level);
     }
 
     @PostMapping("/queryAll")
-    public List<Account> queryAll(@RequestBody Account account) {
-        return service.queryAll(account);
+    public List<Account> queryAll(@RequestBody Account account,
+            @RequestParam(value = "level", required = false) Integer level) {
+        return service.queryAll(account, level);
     }
+
 }

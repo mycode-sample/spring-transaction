@@ -13,8 +13,8 @@
       resultType="com.wrotecode.spring.springtransaction.entity.Account">
     select *
     from spring_tx.account
-    <if test="id != null">
-      where id = #{id}
+    <if test="username != null">
+      where username = #{username}
     </if>
   </select>
 </mapper>
