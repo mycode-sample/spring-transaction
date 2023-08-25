@@ -59,6 +59,16 @@
     <appender-ref ref="SQL"/>
   </logger>
 
+  <logger name="org.springframework.transaction" level="TRACE" additivity="FALSE">
+    <appender-ref ref="STDOUT"/>
+    <appender-ref ref="ALL"/>
+  </logger>
+
+  <logger name="org.springframework.orm.jpa.JpaTransactionManager" level="DEBUG" additivity="FALSE">
+    <appender-ref ref="STDOUT"/>
+    <appender-ref ref="ALL"/>
+  </logger>
+
   <!-- 根logger等级是INFO -->
   <root level="INFO">
     <appender-ref ref="STDOUT"/>
